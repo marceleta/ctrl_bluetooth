@@ -78,6 +78,8 @@ class BlueControl:
             retorno = self.shell.wifi_status()
         elif comm[0] == 'servicos' and comm[1] == 'status\r\n':
             retorno = self.shell.service_status()
+        elif comm[0] == 'wifi' and comm[1] == 'ip\r\n':
+            retorno = self.shell.get_ip()
         else:
             retorno = 'comando nao encontrado'
 
@@ -196,6 +198,30 @@ class ShellExec:
         print('Resumo status: '+str(resumo_status))
         
         return str(resumo_status)
+    
+    def get_ip(self):
+        texto_saida = self.saida_shell('ip addr')
+        posicao = texto_saida.find('inet')
+        posicao = posicao + 4
+        
+        resultado = ''
+
+        if posicao != -1:
+            loop = True
+            while loop:
+                if texto_saida[posicao] != '/':
+                    resultado = resultado + texto_saida[posicao]
+                    posicao = posicao + 1
+                else:
+                    loop = False
+            resultado = '{Ip:' + resultado + '}'
+        else:
+            resultado = 'Nao conectado'
+
+        return resultado
+            
+
+
 
     
 
